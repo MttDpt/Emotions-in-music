@@ -1,7 +1,9 @@
 # Emotions in Music: A Comparative Sentiment Analysis of Popular Songs Across Countries and Markets
 
 ## Overview
-This project seeks to explore how sentiments expressed in popular music lyrics vary between countries and markets. By applying sentiment analysis to the lyrics of top-charted songs from different regions, we aim to identify patterns in emotional tone that may reflect each country's cultural, social, and economic circumstances. The study will also assess how effective sentiment analysis is when applied to song lyrics, offering insights into its applications beyond traditional fields like social media monitoring and market research.
+This ongoing project is being conducted for the Research Methodology and Scientific Writing course (II2202 HT24) at KTH. 
+
+The project seeks to explore how sentiments expressed in popular music lyrics vary between countries and markets. By applying sentiment analysis to the lyrics of top-charted songs from different regions, we aim to identify patterns in emotional tone that may reflect each country's cultural, social, and economic circumstances. The study will also assess how effective sentiment analysis is when applied to song lyrics, offering insights into its applications beyond traditional fields like social media monitoring and market research. 
 
 ## Table of Contents
 - [Research Goals](#research-goals)
