@@ -1,4 +1,3 @@
-import collections   
 import pandas as pd   
 import matplotlib.pyplot as plt   
 from PIL import Image
@@ -22,6 +21,7 @@ from lyricsgenius import Genius
 
 #Load the environment variables
 load_dotenv()
+
 
 #Get the client ID and client secret from the environment variables
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
@@ -61,30 +61,6 @@ genius.skip_non_songs = False
 genius.excluded_terms = ["(Remix)", "(Live)"]
 
 song_lyrics=[]
-stop_words_en=stopwords.words('english')
-stop_words_en.extend(['or', 'm', 'ma', 'ours', 'against', 'nor', "it's", 'o', 
-'wasn', 'hasn', 'my', 'had', 'didn', 'isn', 'did', 'aren', 'those', 'than', 
-"mustn't", "you've", 'to', 'she', 'having', "haven't", 'into', 't', 'll', 
-'himself', 'do', "that'll", 'so', 'of', 'on', 'very', 'for', 'out', 'were', 
-'should', 'they', 'ain', "should've", 'you', "didn't", 'yours', 'was', 'our',
- 'can', 'myself', "shouldn't", 'have', 'up', 'mightn', "you'll", 'any', 
-'itself', 'hadn', 'him', 'doesn', 'weren', 'y', 'being', "don't", 'them', 
-'are','and', 'that', 'your', 'yourself', 'their', 'some', 'ourselves', 've', 
-'doing', 'been', 'shouldn', 'yourselves', "mightn't", 'most', 'because',
- 'few', 'wouldn', "you'd", 'through', "you're", 'themselves', 'an', 'if',
- "wouldn't", 'its', 'other', "won't", "wasn't", "she's", 'we', 'shan',
- "weren't",'don',"hadn't", 'this', 'off', 'while', 'a', 'haven', 'her', 
-'theirs', 'all', "hasn't", "doesn't", 'about', 'then', 'by','such', 'but', 
-'until', 'each', 'there', "aren't", 'with', 'not', "shan't", 'hers', 'it', 
-'too', 'i', 'at', 'is', 'as', 'me', 'herself', 's', 'the', 'where', 'am', 
-'has', 'over', "couldn't", 'when', 'does', 'mustn','re', 'no', 'in', 'who', 
-'d', 'own', 'he', 'be', "isn't", 'his', 'these', 'same', 'whom', 'will', 
-'needn','couldn', 'from'])
-stop_words_es=stopwords.words('spanish')
-stop_words_su=stopwords.words('swedish')
-stop_words_it=stopwords.words('italian')
-
-stop_words = [*stop_words_en,*stop_words_es,*stop_words_it,*stop_words_su]
 
 def get_playlist_tracks(token, playlist_id):
     url = f"https://api.spotify.com/v1/playlists/{playlist_id}"
@@ -100,6 +76,7 @@ def get_playlist_tracks(token, playlist_id):
 def display_playlist_tracks(playlist_data):
     tracks = playlist_data['tracks']['items']
     count_not_found = 0
+    song_data = []
 
     for idx, item in enumerate(tracks):
         track = item['track']
@@ -115,10 +92,19 @@ def display_playlist_tracks(playlist_data):
         if song==None:
           count_not_found+=1
         else:
-          song_lyrics.append(song.lyrics)  
+          song_lyrics.append(song.lyrics)
+          song_data.append({
+                'Track Name': track_name,
+                'Artist': artist_name,
+                'Album': album_name,
+                'Lyrics': song.lyrics
+            })  
           print(f"{idx+1}. {track_name} by {artist_name} from the album {album_name}")
 
     print("Number of not found: ",count_not_found)
+    df = pd.DataFrame(song_data)
+    df.to_excel("song_lyrics_data.xlsx", index=False)
+    print("Data saved to song_lyrics_data.xlsx")
 
 def search_song(song_title):
     headers = get_auth_header_genius()
@@ -172,14 +158,6 @@ def get_lyrics_lyricsovh(artist, title):
     else:
         return None
 
-def preprocess_text(text):
-    tokeniser = RegexpTokenizer(r'[A-Za-z]+')
-    tokens = tokeniser.tokenize(text)
-    
-    data_token=[token.lower() for token in tokens]
-    processed_words= [w for w in data_token if not w in stop_words]
-
-    return processed_words[3:(len(processed_words)-1)]
 
 playlist_id_Sweden = "37i9dQZEVXbKVvfnL1Us06"
 playlist_id_Italy = "37i9dQZEVXbJUPkgaWZcWG"
@@ -188,23 +166,17 @@ playlist_id_Mexico = "37i9dQZEVXbKUoIkUXteF6"
 playlist_id_Argentina = "37i9dQZEVXbKPTKrnFPD0G"
 playlist_id_Brazil = "37i9dQZEVXbKzoK95AbRy9"
 playlist_ids = [
-    playlist_id_Sweden
-    #, playlist_id_Italy, playlist_id_Brazil, playlist_id_Argentina,playlist_id_Mexico,playlist_id_USA
+    #playlist_id_Sweden
+    playlist_id_Italy
+    #,playlist_id_Brazil
+    #,playlist_id_Argentina
+    #,playlist_id_Mexico
+    #,playlist_id_USA
 ]
 
 for playlist_id in playlist_ids:
   playlist_data = get_playlist_tracks(token_spotify, playlist_id)
   display_playlist_tracks(playlist_data)
 
-cleaned_words = np.array([])
-for song in song_lyrics:
-    processed_song = preprocess_text(song)
-    np_processed_song = np.array(processed_song)
-    cleaned_words = np.concatenate((cleaned_words,np_processed_song))
-
-print(len(cleaned_words))
-
-unique_cleaned_words = np.unique(cleaned_words)
-print(len(unique_cleaned_words))
 
 
