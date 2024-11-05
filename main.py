@@ -167,11 +167,11 @@ playlist_id_Argentina = "37i9dQZEVXbKPTKrnFPD0G"
 playlist_id_Brazil = "37i9dQZEVXbKzoK95AbRy9"
 playlist_ids = [
     #playlist_id_Sweden
-    playlist_id_Italy
-    #,playlist_id_Brazil
-    #,playlist_id_Argentina
-    #,playlist_id_Mexico
-    #,playlist_id_USA
+    # playlist_id_Italy
+    playlist_id_Brazil
+    #playlist_id_Argentina
+    #playlist_id_Mexico
+    #playlist_id_USA
 ]
 
 for playlist_id in playlist_ids:
